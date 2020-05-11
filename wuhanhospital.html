@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>武汉定点医院情况</title>
+    <style>
+      html,
+      body {
+            height: 100%;
+            width: 100%;
+        }
+		
+        #view1 {
+            font-size: 32px;
+            background-color:#B4CDCD ;
+            height: 10%;
+            width: 100%;
+        }
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 90%;
+        width: 100%;
+      }
+    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.15/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.15/"></script>
+
+    <script>
+      require([
+        "esri/Map",
+        "esri/views/MapView",
+        "esri/layers/FeatureLayer",
+        "esri/widgets/Legend",
+        "esri/widgets/ScaleBar",
+      
+      ], function(Map, MapView, Featurelayer, Legend, ScaleBar) {
+        var flayer = new Featurelayer({
+          url:
+        "http://www.arcgisonline.cn/server/rest/services/Hosted/%E6%AD%A6%E6%B1%89%E5%AE%9A%E7%82%B9%E5%8C%BB%E9%99%A2%E6%83%85%E5%86%B5/FeatureServer"
+          
+        });
+      
+        var map = new Map({
+          basemap: "topo",
+          layers: [flayer],
+        });
+      
+
+        var view1 = new MapView({
+          container: "viewDiv",
+          map: map,
+          zoom: 4,
+          center: [15, 65] // longitude, latitude
+        });
+        var legend = new Legend({
+  view: view1,
+  layerInfos: [{
+    layer: flayer,
+    title: "武汉定点医院"
+  }]
+});
+
+view1.ui.add(legend, "bottom-right");
+
+var scaleBar1 = new ScaleBar({
+  view: view1,
+  style:"ruler",
+  unit:"metric"
+});
+// Add widget to the bottom left corner of the view
+view1.ui.add(scaleBar1, {
+  position: "bottom-left"
+});
+
+      var coordsWidget = document.createElement("div");
+      coordsWidget.id = "coordsWidget";
+      coordsWidget.className = "esri-widget esri-component";
+      coordsWidget.style.padding = "7px 15px 5px";
+
+      view1.ui.add(coordsWidget, "bottom-right");
+      function showCoordinates(pt) {
+        var coords = "Lat/Lon " + pt.latitude.toFixed(3) + " " + pt.longitude.toFixed(3) +
+            " | Scale 1:" + Math.round(view1.scale * 1) / 1 +
+            " | Zoom " + view1.zoom;
+        coordsWidget.innerHTML = coords;
+      }
+      view1.watch("stationary", function(isStationary) {
+        showCoordinates(view1.center);
+      });
+
+      view1.on("pointer-move", function(evt) {
+        showCoordinates(view1.toMap({ x: evt.x, y: evt.y }));
+      });      
+
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="viewDiv"></div>
+  </body>
+</html>
