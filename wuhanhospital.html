@@ -15,8 +15,8 @@
         }
 		
         #view1 {
-            font-size: 32px;
-            background-color:#B4CDCD ;
+            font-size: 31px;
+            background-color:#B3CDCD ;
             height: 10%;
             width: 100%;
         }
@@ -41,8 +41,9 @@
         "esri/layers/FeatureLayer",
         "esri/widgets/Legend",
         "esri/widgets/ScaleBar",
+	"esri/widgets/Search",
       
-      ], function(Map, MapView, Featurelayer, Legend, ScaleBar) {
+      ], function(Map, MapView, Featurelayer, Legend, ScaleBar, Search ) {
         var flayer = new Featurelayer({
           url:
         "http://www.arcgisonline.cn/server/rest/services/Hosted/%E6%AD%A6%E6%B1%89%E5%AE%9A%E7%82%B9%E5%8C%BB%E9%99%A2%E6%83%85%E5%86%B5/FeatureServer"
@@ -58,8 +59,8 @@
         var view1 = new MapView({
           container: "viewDiv",
           map: map,
-          zoom: 4,
-          center: [15, 65] // longitude, latitude
+          zoom: 10,
+          center: [114.295, 30.608] // longitude, latitude
         });
         var legend = new Legend({
   view: view1,
@@ -80,7 +81,13 @@ var scaleBar1 = new ScaleBar({
 view1.ui.add(scaleBar1, {
   position: "bottom-left"
 });
-
+    const searchWidget = new Search({
+          view: view
+        });
+        view.ui.add(searchWidget, {
+          position: "top-right",
+          index: 4
+        });
       var coordsWidget = document.createElement("div");
       coordsWidget.id = "coordsWidget";
       coordsWidget.className = "esri-widget esri-component";
@@ -106,6 +113,7 @@ view1.ui.add(scaleBar1, {
   </head>
 
   <body>
+	<div id="view1" class="toplink" style="text-align:center"><a href="https://baike.baidu.com">武汉定点医院情况</a></div>  
     <div id="viewDiv"></div>
   </body>
 </html>
